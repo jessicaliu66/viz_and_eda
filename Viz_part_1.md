@@ -31,7 +31,7 @@ weather_df =
     name = recode(
       id, 
       USW00094728 = "CentralPark_NY", # matching ID to station name
-      USC00519397 = "Molokai_HI",
+      USW00022534 = "Molokai_HI",
       USS0023B17S = "Waterhole_WA"),
     tmin = tmin / 10,
     tmax = tmax / 10) |>
@@ -91,3 +91,72 @@ ggp_nyc_weather
 ![](Viz_part_1_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
 
 ## Fancy plot
+
+``` r
+ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name),alpha = 0.3) + # alpha sets the transparency of points
+  geom_smooth(se = FALSE) # add a smooth curve
+```
+
+    ## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_smooth()`).
+
+    ## Warning: Removed 17 rows containing missing values (`geom_point()`).
+
+![](Viz_part_1_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+Plot with facets
+
+``` r
+ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = 0.3) +
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name) 
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_smooth()`).
+
+    ## Warning: Removed 17 rows containing missing values (`geom_point()`).
+
+![](Viz_part_1_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+  # put everything other than variable name under each facet named by the variable
+# facet_grid(name ~ .)
+```
+
+try assigning a specific color
+
+``` r
+weather_df |>
+  filter(name != "CentralPark_NY") |>
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point(alpha = 0.7, size = 0.5)
+```
+
+    ## Warning: Removed 17 rows containing missing values (`geom_point()`).
+
+![](Viz_part_1_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+#  geom_point(color = "blue")
+```
+
+Let’s try a different plot.
+
+``` r
+ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
+  geom_point(aes(size = prcp, alpha = 0.3)) + # assign point size by precipitation
+  geom_smooth()
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_smooth()`).
+
+    ## Warning: Removed 19 rows containing missing values (`geom_point()`).
+
+![](Viz_part_1_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
