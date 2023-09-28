@@ -80,12 +80,72 @@ weather_df |>
 ```
 
 
-Let's try a different plot. 
+Let's try a different plot. (temp is boring)
 
 ```{r}
 ggplot(weather_df, aes(x = date, y = tmax, color = name)) + 
   geom_point(aes(size = prcp, alpha = 0.3)) + # assign point size by precipitation
   geom_smooth()
 
+```
+
+hex
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()
+```
+
+line and points
+
+```{r}
+weather_df |>
+  filter(name == "Molokai_HI") |>
+  ggplot(aes(x = date, y = tmax)) +
+  geom_line(alpha = .5) +
+  geom_point(size = .5)
+```
+
+
+## univariate plotting
+
+histogram
+
+```{r}
+ggplot(weather_df, aes(x = tmax, fill = name)) +
+#ggplot(weather_df, aes(x = tmax, color = name)) +
+  geom_histogram()
+  #geom_histogram(position = "dodge")
+```
+
+
+Let's use a density plot 
+
+```{r}
+ggplot(weather_df, aes(x = tmax, fill = name)) +
+  geom_density(alpha = 0.3, adjust = 0.75)
+```
+
+Using boxplots!!
+
+```{r}
+ggplot(weather_df, aes(y = tmax, x = name)) +
+  geom_boxplot()
+```
+
+Violin plot?
+
+```{r}
+ggplot(weather_df, aes(y = tmax, x = name)) +
+  geom_violin()
+```
+
+ridge plot
+(density plot, but not overlapping)
+
+```{r}
+ggplot(weather_df, aes(x = tmax, y = name)) +
+  geom_density_ridges()
 ```
 
