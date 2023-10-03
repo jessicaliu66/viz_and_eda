@@ -1,0 +1,89 @@
+---
+title: "Viz part 2"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+library(ggridges)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USW00022534", "USS0023B17S"), #station ID
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2021-01-01",
+    date_max = "2022-12-31") |>
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", # matching ID to station name
+      USW00022534 = "Molokai_HI",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) |>
+  select(name, id, everything())
+```
+
+## Same plot from last time
+
+```{r plot labels and names}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5)+
+  labs(
+    title = "Temperature plot",
+    x = "Min daily temp (Degrees C)",
+    y = "Max daily temp",
+    color = "Location",
+    caption = "Max vs min daily temp  in three locations, data from rnoaa"
+  )
+```
+
+```{r x and y axis}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5)+
+  labs(
+    title = "Temperature plot",
+    x = "Min daily temp (Degrees C)",
+    y = "Max daily temp",
+    color = "Location",
+    caption = "Max vs min daily temp  in three locations, data from rnoaa"
+  ) +
+  scale_x_continuous( # x axis
+    breaks = c(-15, 0, 15), 
+    labels = c("-15 C", "0", "15")
+  ) +
+  scale_y_continuous( # y axis
+    position = "right" # put y axis on right hand side
+    #,trans = "sqrt", #usually do in df, not when plotting
+    #limits = c(0, 30) #usually do by filtering before
+  )
+```
+
+what about colors ...
+
+```{r scale_color_hue() and scale_color_viridis()}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .5)+
+  labs(
+    title = "Temperature plot",
+    x = "Min daily temp (Degrees C)",
+    y = "Max daily temp",
+    color = "Location",
+    caption = "Max vs min daily temp  in three locations, data from rnoaa"
+  ) +
+  viridis::scale_color_viridis(discrete = TRUE)
+```
+
+
+## Themes
